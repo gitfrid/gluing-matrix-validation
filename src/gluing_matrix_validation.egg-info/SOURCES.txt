@@ -1,0 +1,10 @@
+LICENSE
+README.md
+pyproject.toml
+setup.cfg
+src/gluing_matrix_validation.egg-info/PKG-INFO
+src/gluing_matrix_validation.egg-info/SOURCES.txt
+src/gluing_matrix_validation.egg-info/dependency_links.txt
+src/gluing_matrix_validation.egg-info/requires.txt
+src/gluing_matrix_validation.egg-info/top_level.txt
+tests/test_convergence.py

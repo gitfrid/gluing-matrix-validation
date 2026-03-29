@@ -8,3 +8,4 @@ version = "0.0.0"
 description = "Gluing matrix SVD validation"
 readme = "README.md"
 requires-python = ">=3.8"
+dynamic = ["dependencies"]

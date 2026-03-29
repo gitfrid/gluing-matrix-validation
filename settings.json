@@ -1,0 +1,6 @@
+{
+  "python.defaultInterpreterPath": "C:\\Program Files\\Python312\\python.exe",
+  "python.analysis.extraPaths": ["./"],
+  "python.autoComplete.extraPaths": ["./"],
+  "python.envFile": "${workspaceFolder}/.env"
+}

@@ -16,7 +16,6 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Try package imports; if they fail, raise a clear error
 try:
     from src.matrix_factory import build_A_matrix_single
     from src.stability import compute_svd_scaled
@@ -27,13 +26,11 @@ except Exception as exc:
         "or set PYTHONPATH to the project root. Original error: " + str(exc)
     ) from exc
 
-# Logging
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 logger = logging.getLogger(__name__)
 
 
 def run_single_barrier(out_dir: Path | None = None) -> Path:
-    """Run single-barrier sweep and save CSV to results/."""
     if out_dir is None:
         out_dir = PROJECT_ROOT / "results"
     out_dir = Path(out_dir)
