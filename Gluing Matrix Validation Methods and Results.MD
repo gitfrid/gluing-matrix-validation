@@ -80,7 +80,7 @@ We remove exponential growth by analytically scaling rows (or columns) that cont
 
 A stabilized double-barrier builder (illustrative) is included in the repository and can be used in place of the original builder:
 
-```python
+python
 import numpy as np
 
 def build_A_matrix_double_stabilized(E, V0, a, b):
@@ -113,7 +113,8 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
     A[7, 6], A[7, 7] = kappa, -kappa * exp(-2*kappa*(2*a+b))
     A[7, 8] = -1j*k*exp(1j*k*(2*a+b)) * scale_2ab
 
-    return A```
+    return A
+
 
 ### Robust SVD workflow
 
