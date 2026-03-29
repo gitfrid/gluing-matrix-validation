@@ -5,10 +5,7 @@
 We present mathematical background, numerical methods, and reproducible results validating the hypothesis that the one-dimensional quantum transmission coefficient \(T(E)\) scales with the square of the smallest singular value of a suitably constructed gluing matrix:
 
 
-\[
-T(E) \propto \sigma_{\min}^2(E).
-\]
-
+Inline math: \(T(E) \propto \sigma_{\min}^2(E)\)
 
 The paper documents an analytic preconditioning strategy that stabilizes the gluing matrix against exponential conditioning caused by evanescent factors, a robust SVD workflow, and a gap-detection protocol to identify multiplicity at resonances. The conceptual motivation is explicitly linked to the Peircean continuum: local analytic patches coherently assemble into global scattering states, and the SVD quantifies that coherence.
 
