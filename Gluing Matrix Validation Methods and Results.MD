@@ -2,11 +2,9 @@
 
 ## Abstract
 
-We present the mathematical background, numerical methods, and reproducible results validating the hypothesis that the one-dimensional quantum transmission coefficient \(T(E)\) scales with the square of the smallest singular value of a suitably constructed gluing matrix:
+We present the mathematical background, numerical methods, and reproducible results validating the hypothesis that the one-dimensional quantum transmission coefficient T(E) scales with the square of the smallest singular value of a suitably constructed gluing matrix:
 
-\[
-T(E) \propto \sigma_{\min}^2(E).
-\]
+T(E) ∝ σ_min(E)²
 
 The work introduces an analytic preconditioning strategy that stabilizes the gluing matrix against exponential ill-conditioning caused by evanescent modes, together with a robust SVD workflow and a gap-detection protocol for identifying multiplicity at resonances.
 
@@ -20,21 +18,19 @@ Scattering across piecewise-constant potentials (e.g. single and double rectangu
 
 On each region, the wavefunction is expressed as a linear combination of:
 
-- propagating modes: \(e^{\pm i k x}\)
-- evanescent modes: \(e^{\pm \kappa x}\)
+- propagating modes: exp(± i k x)
+- evanescent modes: exp(± κ x)
 
-Imposing continuity of \(\psi\) and \(\psi'\) at interfaces yields a linear system:
+Imposing continuity of ψ and ψ' at interfaces yields a linear system:
 
-\[
-A(E)\,x = 0,
-\]
+A(E) · x = 0
 
 where:
 
-- \(A(E) \in \mathbb{C}^{m \times n}\) is the **gluing matrix**
-- \(x\) contains the coefficients of local basis functions
+- A(E) ∈ ℂ^(m×n) is the **gluing matrix**
+- x contains the coefficients of local basis functions
 
-Since scattering problems include normalization freedom, \(A(E)\) is typically **rank-deficient or nearly rank-deficient**, and physical solutions correspond to **near-kernel vectors**.
+Since scattering problems include normalization freedom, A(E) is typically **rank-deficient or nearly rank-deficient**, and physical solutions correspond to **near-kernel vectors**.
 
 ---
 
@@ -42,47 +38,41 @@ Since scattering problems include normalization freedom, \(A(E)\) is typically *
 
 ### Gluing matrix and near-kernel structure
 
-The matrix \(A(E)\) encodes matching conditions between local patches. A nontrivial solution exists when:
+The matrix A(E) encodes matching conditions between local patches.
 
-\[
-\mathrm{rank}(A(E)) < n
-\]
+A nontrivial solution exists when:
+
+rank(A(E)) < n
 
 Numerically, this manifests as a **small singular value**.
 
 Let the singular values be ordered:
 
-\[
-\sigma_1(E) \le \sigma_2(E) \le \cdots \le \sigma_n(E)
-\]
+σ₁(E) ≤ σ₂(E) ≤ ... ≤ σₙ(E)
 
 Then:
 
-- \(\sigma_{\min} = \sigma_1\) measures distance to singularity
-- small \(\sigma_1\) ⇒ strong near-kernel ⇒ physical transmission channel
+- σ_min = σ₁ measures distance to singularity  
+- small σ₁ ⇒ strong near-kernel ⇒ physical transmission channel  
 
 ---
 
 ### Relation to transmission
 
-In the tunneling regime (\(E < V_0\)), transmission arises from exponentially suppressed coupling between regions.
+In the tunneling regime (E < V₀), transmission arises from exponentially suppressed coupling between regions.
 
 We find empirically and heuristically:
 
-\[
-T(E) \approx C(E)\,\sigma_{\min}^2(E),
-\]
+T(E) ≈ C(E) · σ_min(E)²
 
 where:
 
-- \(C(E)\) is a slowly varying normalization factor
-- dependence on basis choice and normalization is absorbed into \(C(E)\)
+- C(E) is a slowly varying normalization factor  
+- dependence on basis choice and normalization is absorbed into C(E)  
 
 Thus:
 
-\[
-\log T(E) \sim 2 \log \sigma_{\min}(E)
-\]
+log T(E) ~ 2 log σ_min(E)
 
 This prediction is tested via **log–log regression**.
 
@@ -94,22 +84,18 @@ At resonances, multiple independent near-kernel vectors appear.
 
 This corresponds to:
 
-\[
-\sigma_1 \approx \sigma_2 \approx \cdots \approx \sigma_C \ll \sigma_{C+1}
-\]
+σ₁ ≈ σ₂ ≈ ... ≈ σ_C ≪ σ_(C+1)
 
-We define multiplicity \(C\) via a **gap criterion**:
+We define multiplicity C via a **gap criterion**:
 
-\[
-g_i = \frac{\sigma_{i+1}}{\sigma_i + \varepsilon_{\mathrm{tiny}}}
-\]
+g_i = σ_(i+1) / (σ_i + ε_tiny)
 
 Then:
 
-- if \(g_i \gg 1\), a spectral gap occurs
-- multiplicity \(C = i\) if:
-  - \(\sigma_i < \delta\)
-  - \(g_i > G_{\mathrm{thresh}}\)
+- if g_i ≫ 1, a spectral gap occurs  
+- multiplicity C = i if:
+  - σ_i < δ  
+  - g_i > G_thresh  
 
 This detects **coexisting modes** (e.g. symmetric / antisymmetric states in double barriers).
 
@@ -121,15 +107,13 @@ This detects **coexisting modes** (e.g. symmetric / antisymmetric states in doub
 
 Evanescent solutions introduce factors:
 
-\[
-e^{\pm \kappa x}, \quad \kappa = \sqrt{V_0 - E}
-\]
+exp(± κ x), where κ = sqrt(V₀ − E)
 
 For large barriers:
 
-- \(e^{\kappa a} \gg 1\)
-- matrix entries span many orders of magnitude
-- SVD becomes numerically unstable
+- exp(κ a) ≫ 1  
+- matrix entries span many orders of magnitude  
+- SVD becomes numerically unstable  
 
 ---
 
@@ -137,21 +121,17 @@ For large barriers:
 
 We stabilize the matrix by rescaling rows (or columns):
 
-\[
-A \mapsto D A
-\]
+A → D · A
 
-where \(D\) removes exponential growth:
+where D removes exponential growth:
 
-\[
-D \sim \mathrm{diag}(e^{-\kappa x_i})
-\]
+D ≈ diag(exp(−κ x_i))
 
 Properties:
 
-- preserves kernel structure
-- preserves singular value *ratios*
-- dramatically improves conditioning
+- preserves kernel structure  
+- preserves singular value ratios  
+- dramatically improves conditioning  
 
 ---
 
@@ -198,26 +178,20 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
 
 ### SVD workflow
 
-1. Compute SVD:
-   \[
-   A = U \Sigma V^*
-   \]
+1. Compute SVD:  
+   A = U Σ V*
 
-2. Normalize:
-   \[
-   \tilde{\sigma}_i = \frac{\sigma_i}{\sigma_{\max}}
-   \]
+2. Normalize:  
+   σ̃_i = σ_i / σ_max
 
 3. Detect multiplicity via gap rule
 
 4. Perform regression:
-   - fit \( \log T(E) \) vs \( \log \sigma_{\min}^2(E) \)
-   - compute \(R^2\), Pearson, Spearman
+   - fit log T(E) vs log σ_min(E)²  
+   - compute R², Pearson, Spearman  
 
-5. Restrict to tunneling regime:
-   \[
-   \kappa a > 2
-   \]
+5. Restrict to tunneling regime:  
+   κ a > 2  
 
 ---
 
@@ -226,73 +200,63 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
 ### Key findings
 
 - **Recovered correlation:**  
-  After stabilization, Pearson correlation exceeds \(0.95\), confirming:
-  \[
-  T(E) \propto \sigma_{\min}^2(E)
-  \]
+  After stabilization, Pearson correlation exceeds 0.95, confirming:  
+  T(E) ∝ σ_min(E)²  
 
 - **Resonance multiplicity:**  
-  Multiple small singular values appear:
-  \[
-  C = 2 \quad (\text{symmetric / antisymmetric modes})
-  \]
+  Multiple small singular values appear:  
+  C = 2 (symmetric / antisymmetric modes)  
 
 - **Numerical robustness:**  
-  No discretization error (analytic basis); only tolerance dependence remains.
+  No discretization error (analytic basis); only tolerance dependence remains.  
 
 ---
 
 ### Continuum / sheaf interpretation
 
-- Local solutions = **sections on patches**
-- Matching conditions = **gluing constraints**
-- Global scattering state = **global section**
+- Local solutions = **sections on patches**  
+- Matching conditions = **gluing constraints**  
+- Global scattering state = **global section**  
 
 The SVD measures:
 
-\[
-\text{coherence of gluing} \;\longleftrightarrow\; \sigma_{\min}
-\]
+coherence of gluing ↔ σ_min
 
-Multiplicity \(C\) corresponds to:
+Multiplicity C corresponds to:
 
-\[
-\dim(\text{near-kernel}) \sim \dim H^1
-\]
+dim(near-kernel) ~ dim H¹
 
-This connects directly to your **cohomological proxy \(C(Z)\)**.
+This connects directly to your **cohomological proxy C(Z)**.
 
 ---
 
 ## Conclusion
 
 - The hypothesis  
-  \[
-  T(E) \propto \sigma_{\min}^2(E)
-  \]
+  T(E) ∝ σ_min(E)²  
   is **numerically validated**
 
 - Analytic preconditioning is **essential**
 
 - SVD provides **new observable structure**:
-  - multiplicity
-  - mode coupling
-  - coherence
+  - multiplicity  
+  - mode coupling  
+  - coherence  
 
 ---
 
 ## Recommendations
 
-- Include stabilized matrix builder in repo
-- Add convergence notebook
-- Store SVD spectra + multiplicity plots
-- Add CI smoke tests
+- Include stabilized matrix builder in repo  
+- Add convergence notebook  
+- Store SVD spectra + multiplicity plots  
+- Add CI smoke tests  
 
 ---
 
 ## References (suggested)
 
-- 1D quantum scattering theory
-- Numerical linear algebra (SVD, conditioning)
-- Sheaf/cohomology methods in physics
+- 1D quantum scattering theory  
+- Numerical linear algebra (SVD, conditioning)  
+- Sheaf/cohomology methods in physics  
 - C. S. Peirce — continuum (conceptual motivation)
