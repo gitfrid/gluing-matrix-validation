@@ -5,136 +5,82 @@ Validate the hypothesis **`T(E) ∝ σ_min²(E)`** for 1D quantum scattering by 
 
 [**Full Methods & Results:**](https://github.com/gitfrid/gluing-matrix-validation/blob/main/Gluing%20Matrix%20Validation%20Methods%20and%20Results.MD)
 
----
 
-## Quickstart
+##  Core Idea (Why this matters)
 
-1. Create and activate a virtual environment  
+### A new way to understand quantum tunneling
 
-   **macOS / Linux**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   ```
+Instead of thinking of tunneling as a mysterious quantum effect, we propose a much more intuitive view:
 
-   **Windows (PowerShell)**
-   ```powershell
-   python -m venv .venv
-   .\.venv\Scripts\Activate.ps1
-   ```
-
-2. Install dependencies  
-
-   ```bash
-   pip install --upgrade pip setuptools wheel
-   pip install -r requirements.txt
-   ```
-
-   or for development:
-
-   ```bash
-   pip install -e .
-   ```
-
-3. Run examples  
-
-   ```bash
-   cd /path/to/gluing-matrix-validation
-   python notebooks/01_single_barrier.py
-   python notebooks/02_double_barrier_resonances.py
-   ```
-
-   Optional batch runner:
-
-   ```bash
-   python gluing_experiment_stable.py
-   ```
-
-   Outputs are written to `results/` (CSV, PNG, JSON).
+> **Transmission = how well local solutions fit together into a global wave**
 
 ---
 
-## Contents
+###  The intuition
 
-- **src/** — core code  
-  `matrix_factory.py`, `stability.py`, `solvers.py`, `analytics.py`  
+In a piecewise potential, the wavefunction is built from **local solutions** in each region.
 
-- **notebooks/** — runnable scripts reproducing experiments  
+To get a physical solution, these pieces must **match perfectly at the boundaries**.
 
-- **gluing_experiment_stable.py** — optional batch runner for sweeps  
-
-- **results/** — generated outputs  
-
-- **tests/** — (optional) smoke/unit tests  
+- If they match well → wave passes through → **high transmission**
+- If they mismatch → wave is blocked → **low transmission**
 
 ---
 
-## Key Points
+###  What we discovered
 
-- **Numerical stabilization**  
-  Analytic preconditioning (row/column scaling) removes exponential overflow/underflow (e.g. `exp(κ·a)`) so SVD reliably reveals small singular values.
+We encode all matching conditions into a single matrix:
 
-- **Gap protocol**  
-  Detects multiplicity (count of near-zero singular values) to identify resonant near-kernel modes.
+> the **gluing matrix** \( A(E) \)
 
-- **Interpretation**  
-  Strong correlation between `T(E)` and `σ_min²(E)` appears once numerical artifacts are removed.  
-  SVD additionally reveals:
-  - multiplicity  
-  - mode structure  
-  - resonance coupling  
+Then we analyze it using **Singular Value Decomposition (SVD)**.
 
 ---
 
-## VS Code Tips
+###  The key result
 
-Add `.vscode/settings.json`:
+> **The smallest singular value measures how well everything fits together**
 
-```json
-{
-  "python.analysis.extraPaths": ["./"]
-}
-```
+And remarkably:
 
-Ensure the workspace uses the correct interpreter.
+\[
+T(E) \propto \sigma_{\min}^2(E)
+\]
 
-Optional `.env`:
-
-```bash
-PYTHONPATH=.
-```
-
-Then reload VS Code and restart the language server.
+- small \( \sigma_{\min} \) → poor fit → low transmission  
+- large \( \sigma_{\min} \) → strong coherence → high transmission  
 
 ---
 
-## Recommended Next Steps
+###  What this means conceptually
 
-- Use the stabilized builder  
-  `build_A_matrix_double_stabilized`
+We turn tunneling into a **coherence problem**:
 
-- Re-run parameter sweeps and:
-  - save multiplicity zoom plots (log scale)
-  - archive CSV / PNG / JSON outputs
-
-- Add a short methods note describing:
-  - analytic preconditioning
-  - gap thresholds
-  - SVD workflow
+- Physics view: particle crosses a barrier  
+- Our view: **local waves successfully glue into a global solution**
 
 ---
 
-## Summary
+###  What SVD is doing
 
-This project shows that:
+SVD answers:
 
-```
-T(E) ∝ σ_min²(E)
-```
+> “How close is this system to having a perfectly consistent global solution?”
 
-holds robustly when numerical instability is removed.
+- near-zero singular value → almost perfect solution exists  
+- multiple small singular values → multiple coherent modes (resonances)
 
-The SVD of the gluing matrix provides deeper structure than transmission alone:
-- detects resonances
-- reveals mode multiplicity
-- quantifies coherence of solutions
+---
+
+###  Why this is powerful
+
+- Gives an **intuitive explanation** of tunneling  
+- Provides a **numerically stable diagnostic tool**  
+- Reveals **hidden structure (resonances, multiplicity)**  
+- Connects physics with **geometry / sheaf-like thinking**
+
+---
+
+### 🚀 In one sentence
+
+> **Tunneling is not magic — it’s the degree of global consistency of local wave solutions, and SVD measures exactly that.**
