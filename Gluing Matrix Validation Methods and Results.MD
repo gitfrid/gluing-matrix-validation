@@ -1,250 +1,167 @@
-# Gluing Matrix Validation — Eine verständliche wissenschaftlich korrekte Fassung
+# Gluing Matrix Validation — Methods and Results
 
 ## Abstract
 
-**Kurzfassung**  
-Wir verbinden die philosophische Idee des Peirceanischen Kontinuums mit einer robusten numerischen Methode zur Analyse von Quanten-Tunneln in eindimensionalen Potentialen.  
+We present a new perspective on one-dimensional quantum tunneling: instead of viewing tunneling as a mysterious quantum effect, it is interpreted as a measure of **global coherence of local solutions**.  
 
-Zentraler Befund:
+In piecewise-constant potentials, the wavefunction is constructed from local solutions on each region. A physical scattering state exists only if these local solutions match at interfaces. We encode these compatibility conditions in a **gluing matrix** \(A(E)\).  
 
-```
-T(E) ∝ σ_min²(E)
-```
+Using **Singular Value Decomposition (SVD)**, we find:
 
-Die Arbeit erklärt intuitiv die Herkunft dieser Idee aus Peirces Kontinuumsvorstellung, leitet die Matrixformalismen her, beschreibt eine analytische Vorbedingung zur Beseitigung exponentieller Ill-Conditioning-Effekte und liefert ein reproduzierbares numerisches Protokoll zur Validierung und Resonanzanalyse.  
+\[
+T(E) \propto \sigma_{\min}^2(E)
+\]
 
-Ziel ist ein Manuskript, das Laien verstehen können, ohne die mathematische Strenge für Fachleser zu verlieren.
+where \(T(E)\) is the transmission coefficient and \(\sigma_{\min}\) is the smallest singular value of \(A(E)\). The SVD also reveals **resonance multiplicity** (multiple near-zero singular values).  
 
----
-
-## Introduction — Peircean Origin
-
-### Intuition
-
-Charles S. Peirce beschreibt das Kontinuum als ein Geflecht lokaler Abschnitte, die auf Überlappungen zusammenpassen müssen, damit ein globales Ganzes entsteht.
-
-Übertragen auf die Quantenmechanik:
-
-- In stückweise konstanten Potentialen existieren lokale Wellenlösungen  
-- Ein globaler Zustand entsteht nur durch **kompatibles Zusammenkleben**
+We provide **analytic preconditioning** to remove exponential ill-conditioning from evanescent modes, a robust SVD workflow, and reproducible numerical experiments validating these claims.
 
 ---
 
-### Warum Peirce relevant ist
+## 1. Introduction — Tunneling as Coherence
 
-Peirces Bild liefert die konzeptionelle Brücke:
+### 1.1 Physical intuition
 
-- physikalisches Problem → **Gluing Problem**
-- mathematische Sprache → **Garben / Kohomologie**
-- numerische Umsetzung → **Gluing Matrix**
+Classically, a particle either passes a barrier or not. In quantum mechanics, the transmission of a wavefunction across a potential barrier can be understood more intuitively as:
 
-Der kleinste Singulärwert misst:
+> **Transmission measures how well local solutions combine into a global solution.**
 
-```
-Grad der Kohäsion ≈ Wie gut lokale Lösungen zusammenpassen
-```
+- Local solutions in each potential region are **analytic**.  
+- Matching conditions at interfaces enforce **continuity** of the wavefunction and its derivative.  
+- Only when the pieces “fit together” globally does a physical transmission occur.  
+
+### 1.2 Conceptual framing
+
+- The **gluing matrix** encodes these matching conditions.  
+- **SVD** quantifies the “fit” or **coherence**.  
+- Near-zero singular values correspond to physically allowed scattering states; multiple small singular values indicate **resonances**.
+
+This perspective links naturally to the **Peircean continuum**, where local sections (patches) glue to form a coherent global object.
 
 ---
 
-## Mathematical Framework
+## 2. Main Result
 
-### Aufbau der Gluing Matrix
+### 2.1 Empirical relation
 
-In jedem Bereich ist die Wellenfunktion eine Linearkombination von:
+Through stabilized numerical experiments, we find:
 
-- propagierenden Komponenten: `exp(± i k x)`
-- evaneszenten Komponenten: `exp(± κ x)`
+\[
+T(E) \propto \sigma_{\min}^2(E)
+\]
 
-mit:
+- \(\sigma_{\min}\) measures the “distance to singularity” of the gluing matrix.  
+- Small \(\sigma_{\min}\) → poor coherence → low transmission.  
+- Large \(\sigma_{\min}\) → strong coherence → high transmission.
 
-```
-κ = sqrt(V0 - E)
-```
+### 2.2 Resonances and multiplicity
 
-Kontinuitätsbedingungen für `ψ` und `ψ'` führen zu:
+At certain energies, multiple near-zero singular values appear:
 
-```
+\[
+\sigma_1 \approx \sigma_2 \approx \dots \approx \sigma_C \ll \sigma_{C+1}
+\]
+
+- \(C\) is the multiplicity (number of coherent modes).  
+- Detected numerically using a **gap protocol** in the normalized singular-value spectrum.
+
+---
+
+## 3. Mathematical Framework
+
+### 3.1 Gluing matrix construction
+
+For a piecewise-constant potential:
+
+\[
+-\frac{\hbar^2}{2m} \psi''(x) + V(x) \psi(x) = E \psi(x)
+\]
+
+- In each segment: \(\psi(x) = A e^{i k x} + B e^{-i k x}\) (propagating)  
+  or \(\psi(x) = C e^{\kappa x} + D e^{-\kappa x}\) (evanescent), \(\kappa = \sqrt{V_0 - E}\)
+- At interfaces, enforce continuity of \(\psi\) and \(\psi'\):
+
+\[
 A(E) x = 0
-```
+\]
 
-- `A(E)` = Gluing Matrix  
-- `x` = Koeffizientenvektor  
+where \(x\) collects local coefficients and \(A(E)\) is the gluing matrix.
 
-Physikalische Lösungen entsprechen **(nahe-)Kernvektoren** von `A(E)`.
+### 3.2 Relation to singular values
 
----
+Let the singular values of \(A(E)\) be:
 
-### Singulärwerte als Maß für Kohäsion
+\[
+\sigma_1 \le \sigma_2 \le \dots \le \sigma_n
+\]
 
-Singulärwerte:
+- \(\sigma_{\min} = \sigma_1\) measures **compatibility/coherence**.  
+- Transmission is controlled by the amplitude of the near-kernel vector:
 
-```
-σ1 ≤ σ2 ≤ ... ≤ σn
-```
+\[
+T(E) \approx C(E) \sigma_{\min}^2
+\]
 
-- `σ_min = σ1` misst Distanz zur Singularität  
-- kleine `σ_min` ⇒ starke Kopplung ⇒ physikalischer Kanal  
+with slowly varying \(C(E)\) absorbing normalization factors.
 
-Im Tunnelbereich (`E < V0`):
+### 3.3 Resonance detection
 
-```
-σ_min(E) ≈ pre(E) * exp(-κ a)
-```
-
-⇒ daraus folgt:
-
-```
-T(E) ≈ C(E) * σ_min²(E)
-```
+- Compute ratios: \(g_i = \frac{\sigma_{i+1}}{\sigma_i + \varepsilon_{\text{tiny}}}\)  
+- Define multiplicity \(C\) as the number of singular values left of the first large gap \(g_i > G_\text{thresh}\) and below \(\delta\).
 
 ---
 
-### Resonanzen und Multiplizität
+## 4. Numerical Methods
 
-Resonanzen zeigen sich durch:
+### 4.1 Challenges
 
-```
-σ1 ≈ σ2 ≈ ... ≈ σC << σC+1
-```
+- Evanescent terms \(\exp(\pm \kappa x)\) cause entries to span **many orders of magnitude** → SVD instability.  
 
-- `C` = Multiplizität (Anzahl kohärenter Modi)  
-- entspricht strukturell einer Kohomologie-Dimension  
+### 4.2 Analytic preconditioning
 
----
+- Rescale rows or columns to remove exponential growth:
 
-## Numerical Methods and Implementation
+\[
+A \mapsto D A, \quad D \sim \mathrm{diag}(e^{-\kappa x_i})
+\]
 
-### Problem der Ill-Conditioning
+- Preserves kernel structure and singular-value ratios.  
+- Restores numerical stability for large barriers.
 
-Evaneszente Terme:
-
-```
-exp(± κ x)
-```
-
-führen zu:
-
-- extrem großen / kleinen Matrixeinträgen  
-- instabiler SVD  
-- Verlust physikalischer Information  
-
----
-
-### Analytische Vorbedingung
-
-Skalierung:
-
-```
-A → D A
-```
-
-mit:
-
-```
-D ≈ diag(exp(-κ x_i))
-```
-
-Eigenschaften:
-
-- erhält Kernstruktur  
-- erhält Singularwert-Verhältnisse  
-- verbessert Kondition drastisch  
-
----
-
-### SVD Workflow
-
-1. Matrix aufbauen:
-   ```
-   A(E)
-   ```
-
-2. SVD berechnen:
-   ```
-   A = U Σ V*
-   ```
-
-3. Normalisieren:
-   ```
-   σ̃_i = σ_i / σ_max
-   ```
-
-4. Multiplizität erkennen:
-
-   ```
-   g_i = σ̃_(i+1) / (σ̃_i + ε_tiny)
-   ```
-
-5. Regression:
-
-   ```
-   log T(E) vs 2 log σ_min(E)
-   ```
-
-6. Tunnelbereich einschränken:
-   ```
-   κ a > 2
-   ```
-
-7. Kennzahlen:
-   - Pearson
-   - Spearman
-   - R²
-
----
-
-## Reproduzierbarkeit und technische Details
-
-- Python: `numpy`, `scipy`, `matplotlib`, `pandas`, `sklearn`
-- Notebook enthält:
-  - Matrix-Builder
-  - Energie-Sweeps
-  - SVD-Spektren
-  - Regression
-  - Multiplizitätsplots
-  - CSV-Export
-
-Wichtig:
-
-- Toleranzen dokumentieren  
-- Skalierung offenlegen  
-- Beispielskripte bereitstellen  
-
----
-
-## Beispielcode — Stabilized Matrix Builder
+### 4.3 Stabilized double-barrier builder (Python example)
 
 ```python
-# siehe repository: build_A_matrix_double_stabilized
-```
+import numpy as np
 
----
+def build_A_matrix_double_stabilized(E, V0, a, b):
+    k = np.sqrt(E + 0j)
+    kappa = np.sqrt(V0 - E + 0j)
+    exp = np.exp
 
-## Kernaussage
+    A = np.zeros((8, 9), dtype=complex)
 
-```
-T(E) ∝ σ_min²(E)
-```
+    # x = 0
+    A[0,0], A[0,1], A[0,2], A[0,3] = 1,1,-1,-1
+    A[1,0], A[1,1], A[1,2], A[1,3] = 1j*k,-1j*k,-kappa,kappa
 
-ist **kein numerischer Zufall**, sondern Ausdruck davon,  
-wie gut lokale Lösungen global zusammenpassen.
+    # x = a (scaled)
+    scale_a = exp(-kappa*a)
+    A[2,2], A[2,3] = 1.0, exp(-2*kappa*a)
+    A[2,4], A[2,5] = -exp(1j*k*a)*scale_a, -exp(-1j*k*a)*scale_a
+    A[3,2], A[3,3] = kappa, -kappa*exp(-2*kappa*a)
+    A[3,4], A[3,5] = -1j*k*exp(1j*k*a)*scale_a, 1j*k*exp(-1j*k*a)*scale_a
 
----
+    # x = a + b
+    A[4,4], A[4,5] = exp(1j*k*(a+b)), exp(-1j*k*(a+b))
+    A[4,6], A[4,7] = -exp(kappa*(a+b)), -exp(-kappa*(a+b))
+    A[5,4], A[5,5] = 1j*k*exp(1j*k*(a+b)), -1j*k*exp(-1j*k*(a+b))
+    A[5,6], A[5,7] = -kappa*exp(kappa*(a+b)), kappa*exp(-kappa*(a+b))
 
-## Interpretation
+    # x = 2a + b (scaled)
+    scale_2ab = exp(-kappa*(2*a+b))
+    A[6,6], A[6,7] = 1.0, exp(-2*kappa*(2*a+b))
+    A[6,8] = -exp(1j*k*(2*a+b))*scale_2ab
+    A[7,6], A[7,7] = kappa, -kappa*exp(-2*kappa*(2*a+b))
+    A[7,8] = -1j*k*exp(1j*k*(2*a+b))*scale_2ab
 
-- lokale Lösungen = „Sections“
-- Matching = „Gluing“
-- globale Lösung = „Global Section“
-
-Die SVD misst:
-
-```
-Kohärenz des Systems
-```
-
-und verbindet damit:
-
-- Quantenphysik  
-- Numerik  
-- Peirce’s Kontinuum  
+    return A
