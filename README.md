@@ -1,12 +1,12 @@
 # Gluing Matrix Validation
 
 **Goal**  
-Validate the hypothesis **`T(E) ∝ σ_min²(E)`** for 1D quantum scattering by analyzing the singular-value spectrum of the gluing matrix. The repo provides stabilized matrix builders, robust SVD wrappers, a gap protocol for multiplicity detection, and runnable examples.
+Validate the hypothesis **\(T(E) \propto \sigma_{\min}^2(E)\)** for 1D quantum scattering by analyzing the singular-value spectrum of the gluing matrix. The repo provides stabilized matrix builders, robust SVD wrappers, a gap protocol for multiplicity detection, and runnable examples.
 
 [**Full Methods & Results:**](https://github.com/gitfrid/gluing-matrix-validation/blob/main/Gluing%20Matrix%20Validation%20Methods%20and%20Results.MD)
 
 
-##  Core Idea (Why this matters)
+## Core Idea (Why this matters)
 
 ### A new way to understand quantum tunneling
 
@@ -16,43 +16,43 @@ Instead of thinking of tunneling as a mysterious quantum effect, we propose a mu
 
 ---
 
-###  The intuition
+### The intuition
 
 In a piecewise potential, the wavefunction is built from **local solutions** in each region.
 
 To get a physical solution, these pieces must **match perfectly at the boundaries**.
 
-- If they match well → wave passes through → **high transmission**
+- If they match well → wave passes through → **high transmission**  
 - If they mismatch → wave is blocked → **low transmission**
 
 ---
 
-###  What we discovered
+### What we discovered
 
 We encode all matching conditions into a single matrix:
 
-> the **gluing matrix** \( A(E) \)
+> the **gluing matrix** \(A(E)\)
 
 Then we analyze it using **Singular Value Decomposition (SVD)**.
 
 ---
 
-###  The key result
+### The key result
 
 > **The smallest singular value measures how well everything fits together**
 
 And remarkably:
 
-\[
+$$
 T(E) \propto \sigma_{\min}^2(E)
-\]
+$$
 
-- small \( \sigma_{\min} \) → poor fit → low transmission  
-- large \( \sigma_{\min} \) → strong coherence → high transmission  
+- small \(\sigma_{\min}\) → poor fit → low transmission  
+- large \(\sigma_{\min}\) → strong coherence → high transmission  
 
 ---
 
-###  What this means conceptually
+### What this means conceptually
 
 We turn tunneling into a **coherence problem**:
 
@@ -61,7 +61,7 @@ We turn tunneling into a **coherence problem**:
 
 ---
 
-###  What SVD is doing
+### What SVD is doing
 
 SVD answers:
 
@@ -72,7 +72,7 @@ SVD answers:
 
 ---
 
-###  Why this is powerful
+### Why this is powerful
 
 - Gives an **intuitive explanation** of tunneling  
 - Provides a **numerically stable diagnostic tool**  
