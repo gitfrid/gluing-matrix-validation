@@ -2,135 +2,107 @@
 
 ## Abstract
 
-We present a new perspective on one-dimensional quantum tunneling: instead of viewing tunneling as a mysterious quantum effect, it is interpreted as a measure of **global coherence of local solutions**.  
+We present a new, intuitive view on 1D quantum tunneling: **transmission measures how well local solutions globally fit together**. Numerically, this coherence is captured by the smallest singular value of the gluing matrix.  
 
-In piecewise-constant potentials, the wavefunction is constructed from local solutions on each region. A physical scattering state exists only if these local solutions match at interfaces. We encode these compatibility conditions in a **gluing matrix** \(A(E)\).  
+Central hypothesis:
 
-Using **Singular Value Decomposition (SVD)**, we find:
+T(E) ∝ σ_min²(E)
 
-\[
-T(E) \propto \sigma_{\min}^2(E)
-\]
-
-where \(T(E)\) is the transmission coefficient and \(\sigma_{\min}\) is the smallest singular value of \(A(E)\). The SVD also reveals **resonance multiplicity** (multiple near-zero singular values).  
-
-We provide **analytic preconditioning** to remove exponential ill-conditioning from evanescent modes, a robust SVD workflow, and reproducible numerical experiments validating these claims.
+We introduce an analytic preconditioning strategy to stabilize the gluing matrix against exponential ill-conditioning caused by evanescent modes, a robust SVD workflow, and a gap-detection protocol for identifying multiplicity at resonances. This provides a reproducible framework for analyzing tunneling and resonances.
 
 ---
 
-## 1. Introduction — Tunneling as Coherence
+## Introduction — A New View on Tunneling
 
-### 1.1 Physical intuition
+Classical tunneling approaches treat transmission as a probability amplitude across barriers. Here we reinterpret it:
 
-Classically, a particle either passes a barrier or not. In quantum mechanics, the transmission of a wavefunction across a potential barrier can be understood more intuitively as:
+**Transmission = "How well local solutions globally fit together."**
 
-> **Transmission measures how well local solutions combine into a global solution.**
+- Local solutions exist in each segment of a piecewise-constant potential.  
+- Continuity of the wavefunction and its derivative ensures these local solutions glue into a global scattering state.  
+- If the local solutions do not fit well, transmission is suppressed.
 
-- Local solutions in each potential region are **analytic**.  
-- Matching conditions at interfaces enforce **continuity** of the wavefunction and its derivative.  
-- Only when the pieces “fit together” globally does a physical transmission occur.  
+Numerically:
 
-### 1.2 Conceptual framing
-
-- The **gluing matrix** encodes these matching conditions.  
-- **SVD** quantifies the “fit” or **coherence**.  
-- Near-zero singular values correspond to physically allowed scattering states; multiple small singular values indicate **resonances**.
-
-This perspective links naturally to the **Peircean continuum**, where local sections (patches) glue to form a coherent global object.
+- Build a **gluing matrix** encoding matching conditions between regions.  
+- Compute the **singular value decomposition (SVD)**.  
+- The **smallest singular value** measures the degree of coherence — the better the fit, the larger the transmission.
 
 ---
 
-## 2. Main Result
+## Results — Key Findings
 
-### 2.1 Empirical relation
+- **Correlation between T(E) and σ_min²(E)** is restored when using analytic preconditioning, even for large barriers.  
+- **Resonance multiplicity**: multiple small singular values appear at resonant energies, corresponding to symmetric and antisymmetric modes.  
+- **Robustness**: analytic patch solutions eliminate discretization errors; only the SVD tolerance affects counting near-zero singulars.
 
-Through stabilized numerical experiments, we find:
-
-\[
-T(E) \propto \sigma_{\min}^2(E)
-\]
-
-- \(\sigma_{\min}\) measures the “distance to singularity” of the gluing matrix.  
-- Small \(\sigma_{\min}\) → poor coherence → low transmission.  
-- Large \(\sigma_{\min}\) → strong coherence → high transmission.
-
-### 2.2 Resonances and multiplicity
-
-At certain energies, multiple near-zero singular values appear:
-
-\[
-\sigma_1 \approx \sigma_2 \approx \dots \approx \sigma_C \ll \sigma_{C+1}
-\]
-
-- \(C\) is the multiplicity (number of coherent modes).  
-- Detected numerically using a **gap protocol** in the normalized singular-value spectrum.
+In plain terms: **the SVD lets you "see" how local solutions combine into global behavior**, revealing both tunneling and mode multiplicity.
 
 ---
 
-## 3. Mathematical Framework
+## Mathematical Framework
 
-### 3.1 Gluing matrix construction
+### Gluing Matrix Construction
 
-For a piecewise-constant potential:
+For each segment:
 
-\[
--\frac{\hbar^2}{2m} \psi''(x) + V(x) \psi(x) = E \psi(x)
-\]
+- Propagating modes: exp(± i k x)  
+- Evanescent modes: exp(± κ x) with κ = sqrt(V0 - E)
 
-- In each segment: \(\psi(x) = A e^{i k x} + B e^{-i k x}\) (propagating)  
-  or \(\psi(x) = C e^{\kappa x} + D e^{-\kappa x}\) (evanescent), \(\kappa = \sqrt{V_0 - E}\)
-- At interfaces, enforce continuity of \(\psi\) and \(\psi'\):
+Enforcing continuity of ψ and ψ' at boundaries produces:
 
-\[
 A(E) x = 0
-\]
 
-where \(x\) collects local coefficients and \(A(E)\) is the gluing matrix.
+Where:
 
-### 3.2 Relation to singular values
+- A(E) — the gluing matrix  
+- x — coefficients of local basis functions  
 
-Let the singular values of \(A(E)\) be:
+Physical solutions correspond to **near-kernel vectors** of A(E).
 
-\[
-\sigma_1 \le \sigma_2 \le \dots \le \sigma_n
-\]
+### Singular Values as Coherence Measure
 
-- \(\sigma_{\min} = \sigma_1\) measures **compatibility/coherence**.  
-- Transmission is controlled by the amplitude of the near-kernel vector:
+- Let σ₁ ≤ σ₂ ≤ … ≤ σ_n be the singular values.  
+- σ_min = σ₁ measures distance to singularity.  
+- Small σ_min → weak global coherence → low transmission.  
+- In tunneling regime (E < V0):
 
-\[
-T(E) \approx C(E) \sigma_{\min}^2
-\]
+T(E) ≈ C(E) * σ_min²(E)
 
-with slowly varying \(C(E)\) absorbing normalization factors.
+Where C(E) is a slowly varying factor absorbing normalization choices.
 
-### 3.3 Resonance detection
+### Multiplicity and Resonances
 
-- Compute ratios: \(g_i = \frac{\sigma_{i+1}}{\sigma_i + \varepsilon_{\text{tiny}}}\)  
-- Define multiplicity \(C\) as the number of singular values left of the first large gap \(g_i > G_\text{thresh}\) and below \(\delta\).
+- Resonances show multiple small singular values:
+
+σ₁ ≈ σ₂ ≈ … ≈ σ_C << σ_C+1
+
+- Multiplicity C is detected using a **gap criterion**:
+
+g_i = σ_{i+1} / (σ_i + ε_tiny)
+
+- If g_i >> 1 and σ_i < δ, set C = i.  
+- This counts coexisting modes at a resonance.
 
 ---
 
-## 4. Numerical Methods
+## Numerical Methods
 
-### 4.1 Challenges
+### Problem: Ill-Conditioning
 
-- Evanescent terms \(\exp(\pm \kappa x)\) cause entries to span **many orders of magnitude** → SVD instability.  
+Evanescent terms (exp(± κ x)) can make matrix entries vary over many orders of magnitude, causing unstable SVD results.
 
-### 4.2 Analytic preconditioning
+### Analytic Preconditioning
 
-- Rescale rows or columns to remove exponential growth:
+- Scale rows or columns to remove exponential growth:
 
-\[
-A \mapsto D A, \quad D \sim \mathrm{diag}(e^{-\kappa x_i})
-\]
+A → D * A, where D ≈ diag(exp(-κ x_i))
 
-- Preserves kernel structure and singular-value ratios.  
-- Restores numerical stability for large barriers.
+- Preserves kernel structure and singular value ratios.  
+- Restores numerical stability.
 
-### 4.3 Stabilized double-barrier builder (Python example)
+### Stabilized Double-Barrier Matrix Example (Python)
 
-```python
 import numpy as np
 
 def build_A_matrix_double_stabilized(E, V0, a, b):
@@ -141,11 +113,11 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
     A = np.zeros((8, 9), dtype=complex)
 
     # x = 0
-    A[0,0], A[0,1], A[0,2], A[0,3] = 1,1,-1,-1
-    A[1,0], A[1,1], A[1,2], A[1,3] = 1j*k,-1j*k,-kappa,kappa
+    A[0,0], A[0,1], A[0,2], A[0,3] = 1, 1, -1, -1
+    A[1,0], A[1,1], A[1,2], A[1,3] = 1j*k, -1j*k, -kappa, kappa
 
     # x = a (scaled)
-    scale_a = exp(-kappa*a)
+    scale_a = exp(-kappa * a)
     A[2,2], A[2,3] = 1.0, exp(-2*kappa*a)
     A[2,4], A[2,5] = -exp(1j*k*a)*scale_a, -exp(-1j*k*a)*scale_a
     A[3,2], A[3,3] = kappa, -kappa*exp(-2*kappa*a)
@@ -165,3 +137,30 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
     A[7,8] = -1j*k*exp(1j*k*(2*a+b))*scale_2ab
 
     return A
+
+### SVD Workflow
+
+1. Compute A = U Σ V*  
+2. Normalize σ_i / σ_max  
+3. Detect multiplicity with gap rule  
+4. Perform log-log regression: log(T(E)) vs 2*log(σ_min(E))  
+5. Restrict to tunneling regime (κ*a > 2)  
+6. Report R², Pearson, Spearman
+
+---
+
+## Conclusion
+
+- **Transmission = global coherence of local solutions**  
+- SVD provides a **quantitative measure of this coherence**  
+- Analytic preconditioning is **essential for stability**  
+- Reveals multiplicity and mode structure at resonances  
+- Results are **reproducible and numerically robust**
+
+---
+
+## Key Takeaways
+
+- Intuitive interpretation: transmission is not just probability, it's a **measure of global fit**  
+- Numerically: **SVD gives you the “coherence meter”**  
+- Conceptual link: Peirce’s continuum → gluing of local solutions → emergent global behavior
