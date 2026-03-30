@@ -81,6 +81,6 @@ SVD answers:
 
 ---
 
-### 🚀 In one sentence
+### In one sentence
 
 > **Tunneling is not magic — it’s the degree of global consistency of local wave solutions, and SVD measures exactly that.**
