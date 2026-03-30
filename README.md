@@ -43,12 +43,10 @@ Then we analyze it using **Singular Value Decomposition (SVD)**.
 
 And remarkably:
 
-$$
-T(E) \propto \sigma_{\min}^2(E)
-$$
+T(E) ∝ σ²ₘᵢₙ(E)
 
-- small \(\sigma_{\min}\) → poor fit → low transmission  
-- large \(\sigma_{\min}\) → strong coherence → high transmission  
+- small σₘᵢₙ → poor fit → low transmission  
+- large σₘᵢₙ → strong coherence → high transmission
 
 ---
 
