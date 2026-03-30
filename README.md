@@ -1,7 +1,7 @@
 # Gluing Matrix Validation
 
 **Goal**  
-Validate the hypothesis **\(T(E) \propto \sigma_{\min}^2(E)\)** for 1D quantum scattering by analyzing the singular-value spectrum of the gluing matrix. The repo provides stabilized matrix builders, robust SVD wrappers, a gap protocol for multiplicity detection, and runnable examples.
+Validate the hypothesis `T(E) ∝ σ_min²(E)` for 1D quantum scattering by analyzing the singular-value spectrum of the gluing matrix. The repo provides stabilized matrix builders, robust SVD wrappers, a gap protocol for multiplicity detection, and runnable examples.
 
 [**Full Methods & Results:**](https://github.com/gitfrid/gluing-matrix-validation/blob/main/Gluing%20Matrix%20Validation%20Methods%20and%20Results.MD)
 
