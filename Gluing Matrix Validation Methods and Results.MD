@@ -163,4 +163,4 @@ def build_A_matrix_double_stabilized(E, V0, a, b):
 
 - Intuitive interpretation: transmission is not just probability, it's a **measure of global fit**  
 - Numerically: **SVD gives you the “coherence meter”**  
-- Conceptual link: Peirce’s continuum → gluing of local solutions → emergent global behavior
+- Conceptual link: C.S. Peirce’s continuum → gluing of local solutions → emergent global behavior
